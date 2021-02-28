@@ -3,8 +3,6 @@
 
 # IDEA
 .idea/**
-# but keep VCS settings
-!.idea/vcs.xml
 # Gradle with auto-import
 *.iml
 *.ipr

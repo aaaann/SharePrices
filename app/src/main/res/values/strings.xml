@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">SharePrices</string>
+    <string name="search_hint">Find company or ticker</string>
+    <string name="stocks_page_title">Stocks</string>
+    <string name="favorite_page_title">Favourite</string>
 </resources>
