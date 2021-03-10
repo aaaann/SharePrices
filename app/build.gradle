@@ -22,6 +22,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -33,6 +38,14 @@ dependencies {
     implementation "androidx.coordinatorlayout:coordinatorlayout:$coordinatorLayout"
     implementation "com.google.android.material:material:$googleMaterial"
     implementation "androidx.recyclerview:recyclerview:$recyclerView"
+    // Retrofit
+    implementation "com.squareup.retrofit2:retrofit:$retrofit"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit2ConverterGson"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit2AdapterRxjava2"
+
+    implementation "io.reactivex.rxjava2:rxandroid:$rxAndroid"
+
+
     testImplementation "junit:junit:$junit"
     androidTestImplementation "androidx.test.ext:junit:$androidTestJunit"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso"

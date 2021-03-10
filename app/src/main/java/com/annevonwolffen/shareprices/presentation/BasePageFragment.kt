@@ -1,4 +1,4 @@
-package com.annevonwolffen.shareprices
+package com.annevonwolffen.shareprices.presentation
 
 import androidx.fragment.app.Fragment
 

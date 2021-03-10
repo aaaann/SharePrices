@@ -8,4 +8,6 @@
     <color name="colorBlackGrey">#1A1A1A</color>
     <color name="colorGrey">#BABABA</color>
     <color name="colorTransparent">@android:color/transparent</color>
+    <color name="colorGreen">#24B35D</color>
+    <color name="colorRed">#B32424</color>
 </resources>

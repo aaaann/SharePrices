@@ -1,10 +1,11 @@
-package com.annevonwolffen.shareprices
+package com.annevonwolffen.shareprices.presentation
 
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
+import com.annevonwolffen.shareprices.R
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -24,7 +25,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initViewPager() {
-        val pagerAdapter = PagerAdapter(supportFragmentManager, lifecycle)
+        val pagerAdapter =
+            PagerAdapter(
+                supportFragmentManager,
+                lifecycle
+            )
         val viewPager: ViewPager2 = findViewById(R.id.pager)
         viewPager.adapter = pagerAdapter
         val tabLayout: TabLayout = findViewById(R.id.tab_layout)

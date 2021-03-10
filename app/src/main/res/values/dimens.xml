@@ -1,8 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="search_view_height">48dp</dimen>
+    <!-- margin -->
+    <dimen name="margin_small_xs">6dp</dimen>
+    <dimen name="margin_small_s">8dp</dimen>
+    <dimen name="margin_small">10dp</dimen>
+    <dimen name="margin_medium_small_xs">12dp</dimen>
+    <dimen name="margin_medium_xs">14dp</dimen>
     <dimen name="margin_medium">16dp</dimen>
+    <dimen name="margin_medium_big">18dp</dimen>
     <dimen name="margin_medium_large">20dp</dimen>
+
+    <!-- corner radius -->
+    <dimen name="corner_raduis_big">16dp</dimen>
+    <dimen name="corner_radius_medium">12dp</dimen>
+
+    <!-- text size -->
     <dimen name="text_size_tab_selected">28sp</dimen>
     <dimen name="text_size_tab_unselected">18sp</dimen>
+
+    <!-- elevation -->
+    <dimen name="elevation_zero">0dp</dimen>
+
+    <!-- icon size -->
+    <dimen name="icon_size_big">52dp</dimen>
+    <dimen name="icon_size_small">16dp</dimen>
+
+    <dimen name="search_view_height">48dp</dimen>
+    <dimen name="stock_card_width">328dp</dimen>
+    <dimen name="stock_card_height">68dp</dimen>
 </resources>
