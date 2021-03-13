@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -13,15 +14,20 @@ import com.annevonwolffen.shareprices.presentation.viewmodel.StocksViewModel
 import com.annevonwolffen.shareprices.presentation.viewmodel.ViewModelProviderFactory
 
 /**
+ * Фрагмент вкладки Stocks
+ *
  * @author Terekhova Anna
  */
 class StocksPageFragment : BasePageFragment() {
 
     private val adapter: StocksAdapter = StocksAdapter()
     private lateinit var stocksViewModel: StocksViewModel
+    private lateinit var shimmerLayout: LinearLayout
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view: View = inflater.inflate(R.layout.fragment_tab, container, false)
+
+        shimmerLayout = view.findViewById(R.id.shimmer_layout)
         initRecyclerView(view)
         createViewModel()
         return view
@@ -46,5 +52,8 @@ class StocksPageFragment : BasePageFragment() {
 
     private fun initObservers() {
         stocksViewModel.stocks.observe(this, Observer { adapter.submitList(it) })
+        stocksViewModel.shimmerVisibility.observe(
+            this,
+            Observer { shimmerLayout.visibility = if (it) View.VISIBLE else View.GONE })
     }
 }

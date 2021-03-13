@@ -20,13 +20,18 @@ class StocksViewModel(
     private val _stocks = MutableLiveData<List<StockModel>>()
     val stocks: LiveData<List<StockModel>> = _stocks
 
+    private val _shimmerVisibility = MutableLiveData<Boolean>()
+    val shimmerVisibility: LiveData<Boolean> = _shimmerVisibility
+
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     fun loadData() {
         compositeDisposable.add(
             stocksInteractor.getPopularStocksData()
+                .doOnSubscribe { _shimmerVisibility.postValue(true) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doFinally { _shimmerVisibility.value = false }
                 .subscribe({ _stocks.value = it }, { Log.d(TAG, it?.message.orEmpty()) })
         )
     }

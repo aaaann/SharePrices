@@ -36,6 +36,7 @@ ext {
     retrofit2ConverterGson = '2.9.0'
     retrofit2AdapterRxjava2 = '2.6.4'
     rxAndroid = '2.1.0'
+    shimmer = '0.5.0'
 
     junit = '4.13'
     androidTestJunit = '1.1.2'

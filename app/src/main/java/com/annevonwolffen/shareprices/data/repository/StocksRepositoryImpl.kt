@@ -15,6 +15,7 @@ import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import java.util.Collections
+import java.util.concurrent.TimeUnit
 
 /**
  * @author Terekhova Anna
@@ -26,26 +27,27 @@ class StocksRepositoryImpl(
 ) : StocksRepository {
 
     override fun getPopularStocksData(): Single<List<StockModel>> {
-        return Observable.fromIterable(getPopularTickers().subList(0, 2))
-            .doOnNext { Log.d("StocksRepository", it.symbol) }
+        return Observable.fromIterable(getPopularTickers())
             .flatMapMaybe { symbolModel ->
                 Maybe.fromCallable {
-                    apiMapper.getCompanyProfile(symbolModel.symbol).zipWith(
-                        apiMapper.getQuoteForTicker(symbolModel.symbol),
-                        BiFunction { profile: CompanyProfileResponse, quote: QuoteResponse ->
-                            converter.convert(
-                                profile,
-                                quote
-                            )
-                        }
-                    )
+                    apiMapper.getCompanyProfile(symbolModel.symbol)
+                        .zipWith(apiMapper.getQuoteForTicker(symbolModel.symbol),
+                            BiFunction { profile: CompanyProfileResponse, quote: QuoteResponse ->
+                                converter.convert(
+                                    profile,
+                                    quote
+                                )
+                            }
+                        )
+                        .doOnError { t -> Log.e(TAG, t?.message.orEmpty()) }
+                        .onErrorComplete()
                 }
                     .subscribeOn(Schedulers.io())
-                    .doOnError { t -> Log.e(TAG, t?.message.orEmpty()) }
-                    .onErrorComplete()
             }
-            .flatMapSingle { maybe -> maybe }
+            .flatMapMaybe { maybe -> maybe }
+            .take(20)
             .toList()
+            .doOnError { Log.d(TAG, "Loading finished with error: $it") }
             .onErrorReturnItem(Collections.emptyList())
     }
 
@@ -53,5 +55,6 @@ class StocksRepositoryImpl(
 
     private companion object {
         const val TAG = "StocksRepository"
+        const val LOAD_TIMEOUT = 30L
     }
 }

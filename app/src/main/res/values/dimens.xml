@@ -10,8 +10,12 @@
     <dimen name="margin_medium_big">18dp</dimen>
     <dimen name="margin_medium_large">20dp</dimen>
 
+    <!-- padding -->
+    <dimen name="padding_medium">16dp</dimen>
+
     <!-- corner radius -->
-    <dimen name="corner_raduis_big">16dp</dimen>
+    <dimen name="corner_radius_small">6dp</dimen>
+    <dimen name="corner_radius_big">16dp</dimen>
     <dimen name="corner_radius_medium">12dp</dimen>
 
     <!-- text size -->
