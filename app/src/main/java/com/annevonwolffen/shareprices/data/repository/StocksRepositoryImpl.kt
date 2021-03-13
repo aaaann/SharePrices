@@ -26,26 +26,26 @@ class StocksRepositoryImpl(
 ) : StocksRepository {
 
     override fun getPopularStocksData(): Single<List<StockModel>> {
-        return Observable.fromIterable(getPopularTickers().subList(1, 3))
-            .doOnNext { it -> Log.d("TEST", it.symbol) }
-            .flatMapSingle { symbolModel ->
-                apiMapper.getCompanyProfile(symbolModel.symbol).zipWith(
-                    /*apiMapper.getQuoteForTicker(symbolModel.symbol)*/Single.just(QuoteResponse(118.68, 121.42)),
-                    BiFunction { profile: CompanyProfileResponse, quote: QuoteResponse ->
-                        converter.convert(
-                            profile,
-                            quote
-                        )
-                    }
-                )
-                    // .subscribeOn(Schedulers.io())
+        return Observable.fromIterable(getPopularTickers().subList(0, 2))
+            .doOnNext { Log.d("StocksRepository", it.symbol) }
+            .flatMapMaybe { symbolModel ->
+                Maybe.fromCallable {
+                    apiMapper.getCompanyProfile(symbolModel.symbol).zipWith(
+                        apiMapper.getQuoteForTicker(symbolModel.symbol),
+                        BiFunction { profile: CompanyProfileResponse, quote: QuoteResponse ->
+                            converter.convert(
+                                profile,
+                                quote
+                            )
+                        }
+                    )
+                }
+                    .subscribeOn(Schedulers.io())
                     .doOnError { t -> Log.e(TAG, t?.message.orEmpty()) }
-                // .onErrorComplete()
-                // .doOnComplete { Log.d("TEST", "onComplete") }
+                    .onErrorComplete()
             }
-            // .flatMapSingle { maybe -> maybe }
+            .flatMapSingle { maybe -> maybe }
             .toList()
-            .doOnSuccess { Log.d("TEST", it.size.toString()) }
             .onErrorReturnItem(Collections.emptyList())
     }
 
