@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.annevonwolffen.shareprices.data.RawDataHelper
 import com.annevonwolffen.shareprices.data.StocksApiMapperImpl
+import com.annevonwolffen.shareprices.data.StocksDatabase
 import com.annevonwolffen.shareprices.data.converter.ResponseToStockDomainModelConverter
 import com.annevonwolffen.shareprices.data.repository.StocksRepositoryImpl
 import com.annevonwolffen.shareprices.domain.StocksInteractorImpl
@@ -18,8 +19,10 @@ class ViewModelProviderFactory(private val context: Context) : ViewModelProvider
         return when {
             modelClass == StocksViewModel::class.java -> {
                 val resourceWrapper = ResourceWrapperImpl(context.resources)
+                val database = StocksDatabase.getDatabase(context)
                 val stocksRepository = StocksRepositoryImpl(
                     StocksApiMapperImpl(),
+                    database.stocksDao(),
                     RawDataHelper(resourceWrapper),
                     ResponseToStockDomainModelConverter()
                 )

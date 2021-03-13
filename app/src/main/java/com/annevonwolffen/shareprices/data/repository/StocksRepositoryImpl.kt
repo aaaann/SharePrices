@@ -3,6 +3,7 @@ package com.annevonwolffen.shareprices.data.repository
 import android.util.Log
 import com.annevonwolffen.shareprices.data.RawDataHelper
 import com.annevonwolffen.shareprices.data.StocksApiMapper
+import com.annevonwolffen.shareprices.data.StocksDao
 import com.annevonwolffen.shareprices.data.converter.ResponseToStockDomainModelConverter
 import com.annevonwolffen.shareprices.domain.StocksRepository
 import com.annevonwolffen.shareprices.models.data.CompanyProfileResponse
@@ -22,12 +23,16 @@ import java.util.concurrent.TimeUnit
  */
 class StocksRepositoryImpl(
     private val apiMapper: StocksApiMapper,
+    private val stocksDao: StocksDao,
     private val rawDataHelper: RawDataHelper,
     private val converter: ResponseToStockDomainModelConverter
 ) : StocksRepository {
 
+    private val tickersList = mutableListOf<String>()
+
     override fun getPopularStocksData(): Single<List<StockModel>> {
         return Observable.fromIterable(getPopularTickers())
+            .doOnNext { tickersList.add(it.symbol) }
             .flatMapMaybe { symbolModel ->
                 Maybe.fromCallable {
                     apiMapper.getCompanyProfile(symbolModel.symbol)
@@ -47,7 +52,9 @@ class StocksRepositoryImpl(
             .flatMapMaybe { maybe -> maybe }
             .take(20)
             .toList()
-            .doOnError { Log.d(TAG, "Loading finished with error: $it") }
+            .doOnSuccess { stocksDao.insert(it) }
+            .map { if (it.isEmpty()) stocksDao.selectStocksByTickers(tickersList) else it }
+            .doOnError { t -> Log.e(TAG, t?.message.orEmpty()) }
             .onErrorReturnItem(Collections.emptyList())
     }
 
