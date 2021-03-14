@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.annevonwolffen.shareprices.R
+import com.annevonwolffen.shareprices.models.presentation.StockPresentationModel
 import com.annevonwolffen.shareprices.presentation.viewmodel.StocksViewModel
 import com.annevonwolffen.shareprices.presentation.viewmodel.ViewModelProviderFactory
 
@@ -18,9 +19,9 @@ import com.annevonwolffen.shareprices.presentation.viewmodel.ViewModelProviderFa
  *
  * @author Terekhova Anna
  */
-class StocksPageFragment : BasePageFragment() {
+open class StocksPageFragment : BasePageFragment() {
 
-    private lateinit var adapter: StocksAdapter
+    protected lateinit var adapter: StocksAdapter
     private lateinit var stocksViewModel: StocksViewModel
     private lateinit var shimmerLayout: LinearLayout
     private lateinit var recyclerView: RecyclerView
@@ -75,7 +76,7 @@ class StocksPageFragment : BasePageFragment() {
     }
 
     private fun initObservers() {
-        stocksViewModel.stocks.observe(this, Observer { adapter.submitList(it) })
+        stocksViewModel.stocks.observe(this, Observer { updateStocksList(it) })
         stocksViewModel.isLoading.observe(
             this,
             Observer { isLoading ->
@@ -83,5 +84,9 @@ class StocksPageFragment : BasePageFragment() {
                 recyclerView.visibility = if (isLoading) View.GONE else View.VISIBLE
                 refreshLayout.isRefreshing = isLoading && isRefreshing
             })
+    }
+
+    protected open fun updateStocksList(stocks: List<StockPresentationModel>) {
+        adapter.submitList(stocks)
     }
 }
