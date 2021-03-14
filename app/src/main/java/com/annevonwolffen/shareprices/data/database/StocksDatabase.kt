@@ -1,4 +1,4 @@
-package com.annevonwolffen.shareprices.data
+package com.annevonwolffen.shareprices.data.database
 
 import android.content.Context
 import androidx.room.Database

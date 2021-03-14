@@ -5,9 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.annevonwolffen.shareprices.data.RawDataHelper
 import com.annevonwolffen.shareprices.data.StocksApiMapperImpl
-import com.annevonwolffen.shareprices.data.StocksDatabase
+import com.annevonwolffen.shareprices.data.StocksSharedPrefHelperImpl
+import com.annevonwolffen.shareprices.data.database.StocksDatabase
 import com.annevonwolffen.shareprices.data.converter.ResponseToStockDomainModelConverter
 import com.annevonwolffen.shareprices.data.repository.StocksRepositoryImpl
+import com.annevonwolffen.shareprices.domain.DomainToPresentationModelConverter
 import com.annevonwolffen.shareprices.domain.StocksInteractorImpl
 import com.annevonwolffen.shareprices.utils.ResourceWrapperImpl
 
@@ -18,7 +20,7 @@ class ViewModelProviderFactory(private val context: Context) : ViewModelProvider
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return when {
             modelClass == StocksViewModel::class.java -> {
-                val resourceWrapper = ResourceWrapperImpl(context.resources)
+                val resourceWrapper = ResourceWrapperImpl(context)
                 val database = StocksDatabase.getDatabase(context)
                 val stocksRepository = StocksRepositoryImpl(
                     StocksApiMapperImpl(),
@@ -26,7 +28,13 @@ class ViewModelProviderFactory(private val context: Context) : ViewModelProvider
                     RawDataHelper(resourceWrapper),
                     ResponseToStockDomainModelConverter()
                 )
-                val stocksInteractor = StocksInteractorImpl(stocksRepository)
+                val sharedPrefHelper = StocksSharedPrefHelperImpl(context)
+                val stocksInteractor =
+                    StocksInteractorImpl(
+                        stocksRepository,
+                        DomainToPresentationModelConverter(resourceWrapper),
+                        sharedPrefHelper
+                    )
                 StocksViewModel(stocksInteractor) as T
             }
             else -> super.create(modelClass)

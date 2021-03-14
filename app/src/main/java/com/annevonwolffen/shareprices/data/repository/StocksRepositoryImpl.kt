@@ -3,7 +3,7 @@ package com.annevonwolffen.shareprices.data.repository
 import android.util.Log
 import com.annevonwolffen.shareprices.data.RawDataHelper
 import com.annevonwolffen.shareprices.data.StocksApiMapper
-import com.annevonwolffen.shareprices.data.StocksDao
+import com.annevonwolffen.shareprices.data.database.StocksDao
 import com.annevonwolffen.shareprices.data.converter.ResponseToStockDomainModelConverter
 import com.annevonwolffen.shareprices.domain.StocksRepository
 import com.annevonwolffen.shareprices.models.data.CompanyProfileResponse
@@ -16,7 +16,6 @@ import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import java.util.Collections
-import java.util.concurrent.TimeUnit
 
 /**
  * @author Terekhova Anna

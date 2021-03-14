@@ -20,16 +20,16 @@ import com.annevonwolffen.shareprices.presentation.viewmodel.ViewModelProviderFa
  */
 class StocksPageFragment : BasePageFragment() {
 
-    private val adapter: StocksAdapter = StocksAdapter()
+    private lateinit var adapter: StocksAdapter
     private lateinit var stocksViewModel: StocksViewModel
     private lateinit var shimmerLayout: LinearLayout
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view: View = inflater.inflate(R.layout.fragment_tab, container, false)
 
+        createViewModel()
         shimmerLayout = view.findViewById(R.id.shimmer_layout)
         initRecyclerView(view)
-        createViewModel()
         return view
     }
 
@@ -40,6 +40,7 @@ class StocksPageFragment : BasePageFragment() {
 
     private fun initRecyclerView(view: View) {
         val recyclerView: RecyclerView = view.findViewById(R.id.stocks_recycler_view)
+        adapter = StocksAdapter(stocksViewModel)
         recyclerView.adapter = adapter
     }
 

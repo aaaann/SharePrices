@@ -37,7 +37,8 @@
 
         </androidx.cardview.widget.CardView>
 
-        <ImageView
+        <ImageButton
+            android:id="@+id/add_to_fav_btn"
             android:layout_width="@dimen/icon_size_small"
             android:layout_height="@dimen/icon_size_small"
             android:layout_marginStart="@dimen/margin_small_xs"
