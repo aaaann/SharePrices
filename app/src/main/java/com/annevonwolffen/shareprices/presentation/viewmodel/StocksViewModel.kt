@@ -17,22 +17,23 @@ import io.reactivex.schedulers.Schedulers
 class StocksViewModel(
     private val stocksInteractor: StocksInteractor
 ) : ViewModel(), StocksAdapter.FavoriteClickListener {
+    var isNewInstance: Boolean = true
 
     private val _stocks = MutableLiveData<List<StockPresentationModel>>()
     val stocks: LiveData<List<StockPresentationModel>> = _stocks
 
-    private val _shimmerVisibility = MutableLiveData<Boolean>()
-    val shimmerVisibility: LiveData<Boolean> = _shimmerVisibility
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     fun loadData() {
         compositeDisposable.add(
             stocksInteractor.getPopularStocksData()
-                .doOnSubscribe { _shimmerVisibility.postValue(true) }
+                .doOnSubscribe { _isLoading.postValue(true) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doFinally { _shimmerVisibility.value = false }
+                .doFinally { _isLoading.value = false }
                 .subscribe({ _stocks.value = it }, { Log.d(TAG, it?.message.orEmpty()) })
         )
     }

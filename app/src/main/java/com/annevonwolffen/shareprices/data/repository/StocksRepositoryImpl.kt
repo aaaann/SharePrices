@@ -30,7 +30,7 @@ class StocksRepositoryImpl(
     private val tickersList = mutableListOf<String>()
 
     override fun getPopularStocksData(): Single<List<StockModel>> {
-        return Observable.fromIterable(getPopularTickers())
+        return Observable.fromIterable(getPopularTickers().subList(0, 21))
             .doOnNext { tickersList.add(it.symbol) }
             .flatMapMaybe { symbolModel ->
                 Maybe.fromCallable {
@@ -49,10 +49,10 @@ class StocksRepositoryImpl(
                     .subscribeOn(Schedulers.io())
             }
             .flatMapMaybe { maybe -> maybe }
-            .take(20)
             .toList()
             .doOnSuccess { stocksDao.insert(it) }
             .map { if (it.isEmpty()) stocksDao.selectStocksByTickers(tickersList) else it }
+            .map { it.sortedByDescending { stock -> stock.currentPrice } }
             .doOnError { t -> Log.e(TAG, t?.message.orEmpty()) }
             .onErrorReturnItem(Collections.emptyList())
     }
