@@ -62,7 +62,7 @@ open class StocksPageFragment : BasePageFragment() {
 
     private fun initRecyclerView(view: View) {
         recyclerView = view.findViewById(R.id.stocks_recycler_view)
-        adapter = StocksAdapter(stocksViewModel)
+        adapter = StocksAdapter(stocksViewModel, stocksViewModel)
         recyclerView.adapter = adapter
     }
 

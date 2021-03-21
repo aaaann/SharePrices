@@ -15,5 +15,13 @@ class StocksInteractorImpl(
     override fun getPopularStocksData(): Single<List<StockPresentationModel>> = repository.getPopularStocksData()
         .map { list -> list.map { converter.convertToPresentationModel(it, sharedPrefHelper.isFavorite(it.ticker)) } }
 
-    override fun setFavorite(ticker: String): Boolean = sharedPrefHelper.setFavorite(ticker)
+    override fun searchSymbol(query: String): Single<List<StockPresentationModel>> = repository.getStocksSearch(query)
+        .map { list -> list.map { converter.convertToPresentationModel(it, sharedPrefHelper.isFavorite(it.ticker)) } }
+
+    override fun setFavorite(ticker: String): Boolean = sharedPrefHelper.addFavorite(ticker)
+
+    override fun getRecentSearch(): Single<List<String>> =
+        Single.fromCallable { sharedPrefHelper.getRecentSearched().toList() }
+
+    override fun addToRecentSearch(ticker: String) = sharedPrefHelper.addToRecentSearched(ticker)
 }

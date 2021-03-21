@@ -7,4 +7,8 @@
     <string name="current_price_pattern">\u0024%1$f</string>
     <string name="price_change_up_pattern">+\u0024%1$f (%2$f%%)</string>
     <string name="price_change_down_pattern">-\u0024%1$f (%2$f%%)</string>
+
+    <string name="recent_search">You’ve searched for this</string>
+    <string name="recent_search_empty">Your search history is empty. Make a try to search by company name or ticker. =)</string>
+    <string name="search_result_empty">No results were found for your search request or an error has occurred. =( Please, try another one.</string>
 </resources>

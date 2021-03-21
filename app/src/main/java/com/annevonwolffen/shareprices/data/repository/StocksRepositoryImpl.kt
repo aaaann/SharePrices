@@ -33,19 +33,7 @@ class StocksRepositoryImpl(
         return Observable.fromIterable(getPopularTickers().subList(0, 21))
             .doOnNext { tickersList.add(it.symbol) }
             .flatMapMaybe { symbolModel ->
-                Maybe.fromCallable {
-                    apiMapper.getCompanyProfile(symbolModel.symbol)
-                        .zipWith(apiMapper.getQuoteForTicker(symbolModel.symbol),
-                            BiFunction { profile: CompanyProfileResponse, quote: QuoteResponse ->
-                                converter.convert(
-                                    profile,
-                                    quote
-                                )
-                            }
-                        )
-                        .doOnError { t -> Log.e(TAG, t?.message.orEmpty()) }
-                        .onErrorComplete()
-                }
+                Maybe.fromCallable { getStockModel(symbolModel.symbol) }
                     .subscribeOn(Schedulers.io())
             }
             .flatMapMaybe { maybe -> maybe }
@@ -55,6 +43,46 @@ class StocksRepositoryImpl(
             .map { it.sortedByDescending { stock -> stock.currentPrice } }
             .doOnError { t -> Log.e(TAG, t?.message.orEmpty()) }
             .onErrorReturnItem(Collections.emptyList())
+    }
+
+    override fun getStocksSearch(query: String): Single<List<StockModel>> {
+        return getSearchSymbols(query)
+            .flatMapSingle { list ->
+                Observable.fromIterable(list)
+                    .doOnNext { Log.d(TAG, "found symbol is $it") }
+                    .flatMapMaybe { symbol ->
+                        Maybe.fromCallable { getStockModel(symbol) }
+                            .subscribeOn(Schedulers.io())
+                    }
+                    .flatMapMaybe { maybe -> maybe }
+                    .toList()
+                    .doOnError { t -> Log.e(TAG, t?.message.orEmpty()) }
+                    .onErrorReturnItem(Collections.emptyList())
+            }
+    }
+
+    private fun getStockModel(symbol: String): Maybe<StockModel> {
+        return apiMapper.getCompanyProfile(symbol)
+            .zipWith(apiMapper.getQuoteForTicker(symbol),
+                BiFunction { profile: CompanyProfileResponse, quote: QuoteResponse ->
+                    converter.convert(
+                        profile,
+                        quote
+                    )
+                }
+            )
+            .doOnError { t -> Log.e(TAG, t?.message.orEmpty()) }
+            .onErrorComplete()
+    }
+
+    private fun getSearchSymbols(query: String): Maybe<List<String>> {
+        return apiMapper.searchSymbol(query)
+            .map { searchResponse ->
+                searchResponse.result
+                    .map { it.symbol }
+            }
+            .doOnError { t -> Log.e(TAG, t?.message.orEmpty()) }
+            .onErrorComplete()
     }
 
     private fun getPopularTickers(): List<SymbolJsonModel> = rawDataHelper.popularTickers

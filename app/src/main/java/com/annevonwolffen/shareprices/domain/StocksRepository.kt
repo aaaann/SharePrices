@@ -8,4 +8,6 @@ import io.reactivex.Single
  */
 interface StocksRepository {
     fun getPopularStocksData(): Single<List<StockModel>>
+
+    fun getStocksSearch(query: String): Single<List<StockModel>>
 }

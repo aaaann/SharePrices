@@ -11,6 +11,7 @@
     <dimen name="margin_medium_large">20dp</dimen>
 
     <!-- padding -->
+    <dimen name="padding_small_s">8dp</dimen>
     <dimen name="padding_medium">16dp</dimen>
 
     <!-- corner radius -->
