@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.annevonwolffen.shareprices.domain.StocksInteractor
+import com.annevonwolffen.shareprices.models.presentation.StockPresentationModel
+import com.annevonwolffen.shareprices.presentation.SingleLiveEvent
 import com.annevonwolffen.shareprices.presentation.StocksAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -14,6 +16,8 @@ class SearchViewModel(
 
     private val _recentSearchedTickers = MutableLiveData<List<String>>()
     val recentSearchedTickers: LiveData<List<String>> = _recentSearchedTickers
+    private val _itemClicked = SingleLiveEvent<StockPresentationModel>()
+    val itemClicked: LiveData<StockPresentationModel> = _itemClicked
 
     fun runSearch(query: String) {
         compositeDisposable.add(
@@ -35,9 +39,10 @@ class SearchViewModel(
         )
     }
 
-    override fun onItemClicked(ticker: String) {
-        Log.d(TAG, "click on stock with ticker $ticker")
-        stocksInteractor.addToRecentSearch(ticker)
+    override fun onItemClicked(stockModel: StockPresentationModel) {
+        Log.d(TAG, "click on stock with ticker $stockModel")
+        stocksInteractor.addToRecentSearch(stockModel.ticker)
+        _itemClicked.value = stockModel
     }
 
     private companion object {

@@ -34,4 +34,14 @@
         <item name="android:textStyle">normal</item>
     </style>
 
+    <style name="TextAppearance.AppTheme.Headline2.NonCaps.BlackGrey" parent="@style/TextAppearance.AppTheme.Headline2.NonCaps">
+        <item name="android:textColor">@color/colorBlackGrey</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="TextAppearance.AppTheme.Headline2.Url" parent="@style/TextAppearance.AppTheme.Headline2.NonCaps">
+        <item name="android:textColor">@color/colorBlue</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
 </resources>

@@ -4,11 +4,14 @@
     <string name="stocks_page_title">Stocks</string>
     <string name="favorite_page_title">Favourite</string>
 
-    <string name="current_price_pattern">\u0024%1$f</string>
-    <string name="price_change_up_pattern">+\u0024%1$f (%2$f%%)</string>
-    <string name="price_change_down_pattern">-\u0024%1$f (%2$f%%)</string>
+    <string name="current_price_pattern">\u0024%1$.2f</string>
+    <string name="price_change_up_pattern">+\u0024%1$.2f (%2$.2f%%)</string>
+    <string name="price_change_down_pattern">-\u0024%1$.2f (%2$.2f%%)</string>
 
     <string name="recent_search">You’ve searched for this</string>
     <string name="recent_search_empty">Your search history is empty. Make a try to search by company name or ticker. =)</string>
     <string name="search_result_empty">No results were found for your search request or an error has occurred. =( Please, try another one.</string>
+    <string name="industry_title">Industry: %1$s</string>
+    <string name="web_url_link">&lt;u&gt;%1$s&lt;/u&gt;</string>
+    <string name="error_details_loading">Company info is not loaded. =( Check your internet connection.</string>
 </resources>

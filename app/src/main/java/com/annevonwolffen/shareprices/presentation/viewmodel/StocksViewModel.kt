@@ -2,7 +2,6 @@ package com.annevonwolffen.shareprices.presentation.viewmodel
 
 import android.util.Log
 import com.annevonwolffen.shareprices.domain.StocksInteractor
-import com.annevonwolffen.shareprices.presentation.StocksAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -11,7 +10,7 @@ import io.reactivex.schedulers.Schedulers
  */
 class StocksViewModel(
     stocksInteractor: StocksInteractor
-) : BaseStocksViewModel(stocksInteractor), StocksAdapter.OnItemClickListener {
+) : BaseStocksViewModel(stocksInteractor) {
 
     fun loadData() {
         compositeDisposable.add(
@@ -26,10 +25,5 @@ class StocksViewModel(
 
     private companion object {
         const val TAG = "StocksViewModel"
-    }
-
-    override fun onItemClicked(ticker: String) {
-        // TODO: implement later
-        Log.d(TAG, "click on stock with ticker $ticker")
     }
 }

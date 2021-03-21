@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
@@ -41,7 +42,14 @@ class StocksAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), position)
+    }
+
+    override fun submitList(list: MutableList<StockPresentationModel>?) {
+        list?.mapIndexed { index, stockPresentationModel ->
+            list[index] = stockPresentationModel.copyWithChangeListPosition(index)
+        }
+        super.submitList(list)
     }
 
     class ViewHolder(
@@ -50,6 +58,7 @@ class StocksAdapter(
         private val onItemClickListener: OnItemClickListener
     ) : RecyclerView.ViewHolder(view) {
 
+        private val stockCardView: CardView = view.findViewById(R.id.stock_card_view)
         private val itemContainer: ConstraintLayout = view.findViewById(R.id.stock_item_container)
         private val tickerTextView: TextView = view.findViewById(R.id.ticker)
         private val nameTextView: TextView = view.findViewById(R.id.companyName)
@@ -58,7 +67,7 @@ class StocksAdapter(
         private val priceChangeTextView: TextView = view.findViewById(R.id.priceChange)
         private val addToFavoriteBtn: ImageButton = view.findViewById(R.id.add_to_fav_btn)
 
-        fun bind(stockModel: StockPresentationModel) {
+        fun bind(stockModel: StockPresentationModel, position: Int) {
             tickerTextView.text = stockModel.ticker
             nameTextView.text = stockModel.name
             currentPriceTextView.text = stockModel.currentPrice
@@ -84,7 +93,16 @@ class StocksAdapter(
                 }
                 setOnClickListener { clickListener.onFavClick(stockModel.ticker) }
             }
-            itemContainer.setOnClickListener { onItemClickListener.onItemClicked(stockModel.ticker) }
+            itemContainer.setOnClickListener { onItemClickListener.onItemClicked(stockModel) }
+            stockCardView.apply {
+                stockModel.positionInList?.let { position ->
+                    if (position % 2 == 0) {
+                        setCardBackgroundColor(ContextCompat.getColor(context, R.color.colorPaleGreyBlue))
+                    } else {
+                        setCardBackgroundColor(ContextCompat.getColor(context, R.color.colorWhite))
+                    }
+                }
+            }
         }
     }
 
@@ -93,6 +111,6 @@ class StocksAdapter(
     }
 
     interface OnItemClickListener {
-        fun onItemClicked(ticker: String)
+        fun onItemClicked(stockModel: StockPresentationModel)
     }
 }

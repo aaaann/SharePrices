@@ -27,10 +27,13 @@
     <dimen name="elevation_zero">0dp</dimen>
 
     <!-- icon size -->
+    <dimen name="icon_size_large">64dp</dimen>
     <dimen name="icon_size_big">52dp</dimen>
+    <dimen name="icon_size_medium">36dp</dimen>
     <dimen name="icon_size_small">16dp</dimen>
 
     <dimen name="search_view_height">48dp</dimen>
     <dimen name="stock_card_width">328dp</dimen>
     <dimen name="stock_card_height">68dp</dimen>
+    <dimen name="constraint_match_parent">0dp</dimen>
 </resources>

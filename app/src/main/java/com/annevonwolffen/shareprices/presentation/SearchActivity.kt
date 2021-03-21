@@ -132,10 +132,15 @@ class SearchActivity : AppCompatActivity() {
         searchViewModel.recentSearchedTickers.observe(this, Observer {
             setChips(it)
         })
+
+        searchViewModel.itemClicked.observe(
+            this,
+            Observer { startActivity(StockDetailsActivity.newIntent(this, it)) }
+        )
     }
 
     private fun setSearchResults(searchResults: List<StockPresentationModel>) {
-        adapter.submitList(searchResults)
+        adapter.submitList(searchResults.toMutableList())
         if (searchResults.isEmpty()) {
             recyclerView.visibility = View.GONE
             searchResultEmptyTextView.visibility = View.VISIBLE

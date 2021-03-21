@@ -8,6 +8,6 @@ import com.annevonwolffen.shareprices.models.presentation.StockPresentationModel
 class FavoritePageFragment : StocksPageFragment() {
 
     override fun updateStocksList(stocks: List<StockPresentationModel>) {
-        adapter.submitList(stocks.filter { it.isFavorite })
+        adapter.submitList(stocks.filter { it.isFavorite }.toMutableList())
     }
 }
