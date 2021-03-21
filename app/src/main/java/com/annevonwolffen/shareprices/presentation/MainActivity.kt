@@ -2,8 +2,11 @@ package com.annevonwolffen.shareprices.presentation
 
 import android.os.Build
 import android.os.Bundle
+import android.text.InputType
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.SearchView.SearchAutoComplete
 import androidx.viewpager2.widget.ViewPager2
 import com.annevonwolffen.shareprices.R
 import com.google.android.material.tabs.TabLayout
@@ -16,6 +19,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setLightStatusBar()
         initViewPager()
+        initSearchView()
     }
 
     private fun setLightStatusBar() {
@@ -36,6 +40,20 @@ class MainActivity : AppCompatActivity() {
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = getString(PAGE_TITLES[position])
         }.attach()
+    }
+
+    private fun initSearchView() {
+        val searchView: SearchView = findViewById(R.id.search_view)
+        val searchEditText: SearchAutoComplete = searchView.findViewById(androidx.appcompat.R.id.search_src_text)
+        searchEditText.apply {
+            inputType = InputType.TYPE_NULL
+            isFocusable = false
+            isCursorVisible = false
+        }
+
+        searchEditText.setOnClickListener {
+            startActivity(SearchActivity.newIntent(this))
+        }
     }
 
     private companion object {

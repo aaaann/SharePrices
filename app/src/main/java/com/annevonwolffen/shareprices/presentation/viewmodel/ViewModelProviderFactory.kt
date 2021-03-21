@@ -37,6 +37,24 @@ class ViewModelProviderFactory(private val context: Context) : ViewModelProvider
                     )
                 StocksViewModel(stocksInteractor) as T
             }
+            modelClass == SearchViewModel::class.java -> {
+                val resourceWrapper = ResourceWrapperImpl(context)
+                val database = StocksDatabase.getDatabase(context)
+                val stocksRepository = StocksRepositoryImpl(
+                    StocksApiMapperImpl(),
+                    database.stocksDao(),
+                    RawDataHelper(resourceWrapper),
+                    ResponseToStockDomainModelConverter()
+                )
+                val sharedPrefHelper = StocksSharedPrefHelperImpl(context)
+                val stocksInteractor =
+                    StocksInteractorImpl(
+                        stocksRepository,
+                        DomainToPresentationModelConverter(resourceWrapper),
+                        sharedPrefHelper
+                    )
+                SearchViewModel(stocksInteractor) as T
+            }
             else -> super.create(modelClass)
         }
     }

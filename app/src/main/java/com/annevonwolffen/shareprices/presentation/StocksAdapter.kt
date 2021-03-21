@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -19,7 +20,10 @@ import com.annevonwolffen.shareprices.models.presentation.StockPresentationModel
 /**
  * @author Terekhova Anna
  */
-class StocksAdapter(private val favoriteClickListener: FavoriteClickListener) :
+class StocksAdapter(
+    private val favoriteClickListener: FavoriteClickListener,
+    private val onItemClickListener: OnItemClickListener
+) :
     ListAdapter<StockPresentationModel, StocksAdapter.ViewHolder>(DiffUtilCallback()) {
 
     class DiffUtilCallback : DiffUtil.ItemCallback<StockPresentationModel>() {
@@ -33,15 +37,20 @@ class StocksAdapter(private val favoriteClickListener: FavoriteClickListener) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.stock_item_layout, parent, false)
-        return ViewHolder(itemView, favoriteClickListener)
+        return ViewHolder(itemView, favoriteClickListener, onItemClickListener)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    class ViewHolder(view: View, private val clickListener: FavoriteClickListener) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(
+        view: View,
+        private val clickListener: FavoriteClickListener,
+        private val onItemClickListener: OnItemClickListener
+    ) : RecyclerView.ViewHolder(view) {
 
+        private val itemContainer: ConstraintLayout = view.findViewById(R.id.stock_item_container)
         private val tickerTextView: TextView = view.findViewById(R.id.ticker)
         private val nameTextView: TextView = view.findViewById(R.id.companyName)
         private val logoImageView: ImageView = view.findViewById(R.id.logo_image_view)
@@ -75,10 +84,15 @@ class StocksAdapter(private val favoriteClickListener: FavoriteClickListener) :
                 }
                 setOnClickListener { clickListener.onFavClick(stockModel.ticker) }
             }
+            itemContainer.setOnClickListener { onItemClickListener.onItemClicked(stockModel.ticker) }
         }
     }
 
     interface FavoriteClickListener {
         fun onFavClick(ticker: String)
+    }
+
+    interface OnItemClickListener {
+        fun onItemClicked(ticker: String)
     }
 }

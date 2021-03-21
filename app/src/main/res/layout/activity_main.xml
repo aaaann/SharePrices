@@ -19,6 +19,7 @@
             app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed|snap">
 
             <androidx.appcompat.widget.SearchView
+                android:id="@+id/search_view"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/search_view_height"
                 android:layout_marginBottom="@dimen/margin_medium_large"
@@ -26,10 +27,14 @@
                 android:layout_marginStart="@dimen/margin_medium"
                 android:layout_marginTop="@dimen/margin_medium"
                 android:background="@drawable/search_view_background"
+                android:focusable="false"
+                android:inputType="none"
                 app:defaultQueryHint="@string/search_hint"
                 app:iconifiedByDefault="false"
                 app:layout_collapseMode="parallax"
-                app:queryBackground="@null" />
+                app:queryBackground="@null"
+                app:searchIcon="@null"
+                app:submitBackground="@null" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
@@ -49,7 +54,7 @@
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

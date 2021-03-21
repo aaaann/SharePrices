@@ -9,5 +9,11 @@ import io.reactivex.Single
 interface StocksInteractor {
     fun getPopularStocksData(): Single<List<StockPresentationModel>>
 
+    fun searchSymbol(query: String): Single<List<StockPresentationModel>>
+
     fun setFavorite(ticker: String): Boolean
+
+    fun getRecentSearch(): Single<List<String>>
+
+    fun addToRecentSearch(ticker: String)
 }

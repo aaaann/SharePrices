@@ -2,6 +2,7 @@ package com.annevonwolffen.shareprices.data
 
 import com.annevonwolffen.shareprices.models.data.CompanyProfileResponse
 import com.annevonwolffen.shareprices.models.data.QuoteResponse
+import com.annevonwolffen.shareprices.models.data.SymbolSearchResponse
 import io.reactivex.Maybe
 
 /**
@@ -17,5 +18,9 @@ class StocksApiMapperImpl : StocksApiMapper {
 
     override fun getCompanyProfile(ticker: String): Maybe<CompanyProfileResponse> {
         return stocksService.getCompanyProfile(ticker)
+    }
+
+    override fun searchSymbol(query: String): Maybe<SymbolSearchResponse> {
+        return stocksService.searchSymbol(query)
     }
 }
