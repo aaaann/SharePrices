@@ -16,6 +16,7 @@ import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import java.util.Collections
+import java.util.concurrent.TimeUnit
 
 /**
  * @author Terekhova Anna
@@ -71,6 +72,7 @@ class StocksRepositoryImpl(
                     )
                 }
             )
+            .timeout(LOAD_TIMEOUT, TimeUnit.SECONDS)
             .doOnError { t -> Log.e(TAG, t?.message.orEmpty()) }
             .onErrorComplete()
     }
