@@ -19,13 +19,14 @@ import com.annevonwolffen.shareprices.presentation.viewmodel.ViewModelProviderFa
  *
  * @author Terekhova Anna
  */
-open class StocksPageFragment : BasePageFragment() {
+open class StocksPageFragment : BasePageFragment(), StocksAdapter.OnItemClickListener {
 
     protected lateinit var adapter: StocksAdapter
     private lateinit var stocksViewModel: StocksViewModel
     private lateinit var shimmerLayout: LinearLayout
     private lateinit var recyclerView: RecyclerView
     private lateinit var refreshLayout: SwipeRefreshLayout
+    private lateinit var scrollObserver: RecyclerView.AdapterDataObserver
 
     private var isRefreshing = false
 
@@ -41,6 +42,14 @@ open class StocksPageFragment : BasePageFragment() {
     override fun onStart() {
         super.onStart()
         initObservers()
+    }
+
+    override fun onDestroy() {
+        try {
+            adapter.unregisterAdapterDataObserver(scrollObserver)
+        } catch (ex: IllegalStateException) {
+        }
+        super.onDestroy()
     }
 
     private fun createViewModel() {
@@ -62,8 +71,20 @@ open class StocksPageFragment : BasePageFragment() {
 
     private fun initRecyclerView(view: View) {
         recyclerView = view.findViewById(R.id.stocks_recycler_view)
-        adapter = StocksAdapter(stocksViewModel, stocksViewModel)
+        adapter = StocksAdapter(stocksViewModel, this)
         recyclerView.adapter = adapter
+        scrollObserver = object : RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                super.onItemRangeInserted(positionStart, itemCount)
+                recyclerView.scrollToPosition(0)
+            }
+
+            override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
+                super.onItemRangeRemoved(positionStart, itemCount)
+                recyclerView.scrollToPosition(0)
+            }
+        }
+        adapter.registerAdapterDataObserver(scrollObserver)
     }
 
     private fun initRefreshLayout(view: View) {
@@ -87,6 +108,10 @@ open class StocksPageFragment : BasePageFragment() {
     }
 
     protected open fun updateStocksList(stocks: List<StockPresentationModel>) {
-        adapter.submitList(stocks)
+        adapter.submitList(stocks.toMutableList())
+    }
+
+    override fun onItemClicked(stockModel: StockPresentationModel) {
+        startActivity(context?.let { StockDetailsActivity.newIntent(it, stockModel) })
     }
 }

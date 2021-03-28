@@ -8,5 +8,8 @@ import com.google.gson.annotations.SerializedName
 class CompanyProfileResponse(
     @SerializedName("name") val companyName: String,
     @SerializedName("ticker") val ticker: String,
-    @SerializedName("logo") val logo: String
+    @SerializedName("logo") val logo: String,
+    @SerializedName("phone") val phone: String,
+    @SerializedName("weburl") val webUrl: String,
+    @SerializedName("finnhubIndustry") val finnhubIndustry: String
 )
