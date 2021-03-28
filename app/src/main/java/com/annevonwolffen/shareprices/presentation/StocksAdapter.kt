@@ -17,13 +17,15 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.annevonwolffen.shareprices.R
 import com.annevonwolffen.shareprices.models.presentation.StockPresentationModel
+import com.annevonwolffen.shareprices.utils.ImageManager
 
 /**
  * @author Terekhova Anna
  */
 class StocksAdapter(
     private val favoriteClickListener: FavoriteClickListener,
-    private val onItemClickListener: OnItemClickListener
+    private val onItemClickListener: OnItemClickListener,
+    private val imageManager: ImageManager
 ) :
     ListAdapter<StockPresentationModel, StocksAdapter.ViewHolder>(DiffUtilCallback()) {
 
@@ -38,11 +40,11 @@ class StocksAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.stock_item_layout, parent, false)
-        return ViewHolder(itemView, favoriteClickListener, onItemClickListener)
+        return ViewHolder(itemView, favoriteClickListener, onItemClickListener, imageManager)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position), position)
+        holder.bind(getItem(position))
     }
 
     override fun submitList(list: MutableList<StockPresentationModel>?) {
@@ -55,7 +57,8 @@ class StocksAdapter(
     class ViewHolder(
         view: View,
         private val clickListener: FavoriteClickListener,
-        private val onItemClickListener: OnItemClickListener
+        private val onItemClickListener: OnItemClickListener,
+        private val imageManager: ImageManager
     ) : RecyclerView.ViewHolder(view) {
 
         private val stockCardView: CardView = view.findViewById(R.id.stock_card_view)
@@ -67,7 +70,7 @@ class StocksAdapter(
         private val priceChangeTextView: TextView = view.findViewById(R.id.priceChange)
         private val addToFavoriteBtn: ImageButton = view.findViewById(R.id.add_to_fav_btn)
 
-        fun bind(stockModel: StockPresentationModel, position: Int) {
+        fun bind(stockModel: StockPresentationModel) {
             tickerTextView.text = stockModel.ticker
             nameTextView.text = stockModel.name
             currentPriceTextView.text = stockModel.currentPrice
@@ -103,6 +106,17 @@ class StocksAdapter(
                     }
                 }
             }
+            stockModel.logo.apply {
+                if (isNotEmpty()) {
+                    setLogoImage(this)
+                } else {
+                    logoImageView.setImageResource(R.drawable.ic_monetization)
+                }
+            }
+        }
+
+        private fun setLogoImage(url: String) {
+            imageManager.load(logoImageView, url)
         }
     }
 

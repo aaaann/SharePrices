@@ -19,11 +19,15 @@ import com.annevonwolffen.shareprices.App
 import com.annevonwolffen.shareprices.R
 import com.annevonwolffen.shareprices.models.presentation.StockPresentationModel
 import com.annevonwolffen.shareprices.presentation.viewmodel.SearchViewModel
+import com.annevonwolffen.shareprices.utils.ImageManager
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import javax.inject.Inject
 
 class SearchActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var imageManager: ImageManager
 
     @Inject
     lateinit var viewModelProviderFactory: ViewModelProvider.Factory
@@ -112,7 +116,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun initRecyclerView() {
         recyclerView = findViewById(R.id.search_result_stocks)
-        adapter = StocksAdapter(searchViewModel, searchViewModel)
+        adapter = StocksAdapter(searchViewModel, searchViewModel, imageManager)
         recyclerView.adapter = adapter
     }
 

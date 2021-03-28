@@ -15,6 +15,7 @@ import com.annevonwolffen.shareprices.App
 import com.annevonwolffen.shareprices.R
 import com.annevonwolffen.shareprices.models.presentation.StockPresentationModel
 import com.annevonwolffen.shareprices.presentation.viewmodel.StocksViewModel
+import com.annevonwolffen.shareprices.utils.ImageManager
 import javax.inject.Inject
 
 /**
@@ -23,6 +24,9 @@ import javax.inject.Inject
  * @author Terekhova Anna
  */
 open class StocksPageFragment : Fragment(), StocksAdapter.OnItemClickListener {
+
+    @Inject
+    lateinit var imageManager: ImageManager
 
     @Inject
     lateinit var viewModelProviderFactory: ViewModelProvider.Factory
@@ -82,7 +86,7 @@ open class StocksPageFragment : Fragment(), StocksAdapter.OnItemClickListener {
 
     private fun initRecyclerView(view: View) {
         recyclerView = view.findViewById(R.id.stocks_recycler_view)
-        adapter = StocksAdapter(stocksViewModel, this)
+        adapter = StocksAdapter(stocksViewModel, this, imageManager)
         recyclerView.adapter = adapter
         scrollObserver = object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {

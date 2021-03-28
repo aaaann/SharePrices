@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -24,10 +25,14 @@ import com.annevonwolffen.shareprices.App
 import com.annevonwolffen.shareprices.R
 import com.annevonwolffen.shareprices.models.presentation.StockPresentationModel
 import com.annevonwolffen.shareprices.presentation.viewmodel.StockDetailsViewModel
+import com.annevonwolffen.shareprices.utils.ImageManager
 import com.facebook.shimmer.ShimmerFrameLayout
 import javax.inject.Inject
 
 class StockDetailsActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var imageManager: ImageManager
 
     @Inject
     lateinit var viewModelProviderFactory: ViewModelProvider.Factory
@@ -139,10 +144,16 @@ class StockDetailsActivity : AppCompatActivity() {
                 val phoneTextView: TextView = findViewById(R.id.phone_text)
                 val webUrlTextView: TextView = findViewById(R.id.web_url_text)
                 val industryTextView: TextView = findViewById(R.id.industry_text)
+                val logoImage: ImageView = findViewById(R.id.logo)
                 phoneTextView.text = model.phone?.substringBefore(".")
                 webUrlTextView.text = Html.fromHtml(String.format(getString(R.string.web_url_link, model.webUrl)))
                 webUrlTextView.setOnClickListener { model.webUrl?.let { it1 -> openWebPage(it1) } }
                 industryTextView.text = getString(R.string.industry_title, model.industry)
+                if (model.logoUrl.isNullOrEmpty()) {
+                    logoImage.visibility = View.GONE
+                } else {
+                    imageManager.load(logoImage, model.logoUrl)
+                }
             }
         })
 

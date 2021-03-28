@@ -20,6 +20,8 @@ import com.annevonwolffen.shareprices.domain.StocksInteractor
 import com.annevonwolffen.shareprices.domain.StocksInteractorImpl
 import com.annevonwolffen.shareprices.domain.company.CompanyInfoInteractor
 import com.annevonwolffen.shareprices.domain.company.CompanyInfoInteractorImpl
+import com.annevonwolffen.shareprices.utils.GlideImageManager
+import com.annevonwolffen.shareprices.utils.ImageManager
 import com.annevonwolffen.shareprices.utils.ResourceWrapper
 import com.annevonwolffen.shareprices.utils.ResourceWrapperImpl
 import dagger.Module
@@ -39,6 +41,10 @@ class AppModule {
     @Singleton
     @Provides
     fun provideStocksSharedPrefHelper(context: Context): StocksSharedPrefHelper = StocksSharedPrefHelperImpl(context)
+
+    @Singleton
+    @Provides
+    fun provideGlideImageManager(context: Context): ImageManager = GlideImageManager(context)
 
     @Singleton
     @Provides

@@ -34,6 +34,7 @@
                 android:layout_height="match_parent"
                 android:importantForAccessibility="no"
                 android:scaleType="centerCrop"
+                android:src="@drawable/ic_monetization"
                 tools:background="@color/colorGrey" />
 
         </androidx.cardview.widget.CardView>
