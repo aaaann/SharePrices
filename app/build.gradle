@@ -61,6 +61,10 @@ dependencies {
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swipeRefreshLayout"
 
+    // Dagger2
+    implementation "com.google.dagger:dagger:$dagger"
+    kapt "com.google.dagger:dagger-compiler:$dagger"
+
 
     testImplementation "junit:junit:$junit"
     androidTestImplementation "androidx.test.ext:junit:$androidTestJunit"

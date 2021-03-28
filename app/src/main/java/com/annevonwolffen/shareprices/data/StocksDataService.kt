@@ -27,7 +27,8 @@ interface StocksDataService {
         @Query("q") query: String
     ): Maybe<SymbolSearchResponse>
 
-    private companion object {
-        const val API_KEY = "c11rphv48v6p2grlkfbg"
+    companion object {
+        const val BASE_URL = "https://finnhub.io/api/v1/"
+        private const val API_KEY = "c11rphv48v6p2grlkfbg"
     }
 }

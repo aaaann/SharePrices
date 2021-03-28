@@ -39,6 +39,7 @@ ext {
     shimmer = '0.5.0'
     room = '2.2.5'
     swipeRefreshLayout = '1.1.0'
+    dagger = '2.29.1'
 
     junit = '4.13'
     androidTestJunit = '1.1.2'

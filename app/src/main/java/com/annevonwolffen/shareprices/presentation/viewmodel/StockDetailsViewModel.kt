@@ -8,14 +8,18 @@ import com.annevonwolffen.shareprices.domain.company.CompanyInfoInteractor
 import com.annevonwolffen.shareprices.models.domain.CompanyInfoModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-class StockDetailsViewModel(
+class StockDetailsViewModel @Inject constructor(
     private val companyInfoInteractor: CompanyInfoInteractor,
     private val stocksInteractor: StocksInteractor
 ) : BaseViewModel() {
 
     private val _companyInfo = MutableLiveData<CompanyInfoModel>()
     val companyInfo: LiveData<CompanyInfoModel> = _companyInfo
+
+    private val _isFavorite = MutableLiveData<Boolean>()
+    val isFavorite: LiveData<Boolean> = _isFavorite
 
     fun loadCompanyData(ticker: String) {
         compositeDisposable.add(
@@ -31,8 +35,8 @@ class StockDetailsViewModel(
         )
     }
 
-    fun clickFavorite(ticker: String): Boolean {
-        return stocksInteractor.setFavorite(ticker)
+    fun clickFavorite(ticker: String) {
+        _isFavorite.value = stocksInteractor.setFavorite(ticker)
     }
 
     private companion object {

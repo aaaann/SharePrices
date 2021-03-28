@@ -1,26 +1,31 @@
 package com.annevonwolffen.shareprices.presentation
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.annevonwolffen.shareprices.App
 import com.annevonwolffen.shareprices.R
 import com.annevonwolffen.shareprices.models.presentation.StockPresentationModel
 import com.annevonwolffen.shareprices.presentation.viewmodel.StocksViewModel
-import com.annevonwolffen.shareprices.presentation.viewmodel.ViewModelProviderFactory
+import javax.inject.Inject
 
 /**
  * Фрагмент вкладки Stocks
  *
  * @author Terekhova Anna
  */
-open class StocksPageFragment : BasePageFragment(), StocksAdapter.OnItemClickListener {
+open class StocksPageFragment : Fragment(), StocksAdapter.OnItemClickListener {
 
+    @Inject
+    lateinit var viewModelProviderFactory: ViewModelProvider.Factory
     protected lateinit var adapter: StocksAdapter
     private lateinit var stocksViewModel: StocksViewModel
     private lateinit var shimmerLayout: LinearLayout
@@ -29,6 +34,12 @@ open class StocksPageFragment : BasePageFragment(), StocksAdapter.OnItemClickLis
     private lateinit var scrollObserver: RecyclerView.AdapterDataObserver
 
     private var isRefreshing = false
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        (requireActivity().application as App).appComponent.inject(this)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view: View = inflater.inflate(R.layout.fragment_tab, container, false)
@@ -54,7 +65,7 @@ open class StocksPageFragment : BasePageFragment(), StocksAdapter.OnItemClickLis
 
     private fun createViewModel() {
         stocksViewModel = activity?.let {
-            ViewModelProvider(it, ViewModelProviderFactory(it.applicationContext))[StocksViewModel::class.java]
+            ViewModelProvider(it, viewModelProviderFactory)[StocksViewModel::class.java]
         } ?: throw Exception("Activity is null")
         // если вьюмодель взята не из стора, т. е. не при смене конфигурации,
         // запустить загрузку данных

@@ -20,20 +20,25 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.annevonwolffen.shareprices.App
 import com.annevonwolffen.shareprices.R
 import com.annevonwolffen.shareprices.models.presentation.StockPresentationModel
 import com.annevonwolffen.shareprices.presentation.viewmodel.StockDetailsViewModel
-import com.annevonwolffen.shareprices.presentation.viewmodel.ViewModelProviderFactory
 import com.facebook.shimmer.ShimmerFrameLayout
+import javax.inject.Inject
 
 class StockDetailsActivity : AppCompatActivity() {
 
+    @Inject
+    lateinit var viewModelProviderFactory: ViewModelProvider.Factory
     private lateinit var detailsViewModel: StockDetailsViewModel
     private var stockPresentationModel: StockPresentationModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
+        (application as App).appComponent.inject(this)
+
         setUpAppBar()
         setLightStatusBar()
         createViewModel()
@@ -118,7 +123,7 @@ class StockDetailsActivity : AppCompatActivity() {
 
     private fun createViewModel() {
         detailsViewModel =
-            ViewModelProvider(this, ViewModelProviderFactory(applicationContext))[StockDetailsViewModel::class.java]
+            ViewModelProvider(this, viewModelProviderFactory)[StockDetailsViewModel::class.java]
     }
 
     private fun initObservers() {
@@ -147,6 +152,11 @@ class StockDetailsActivity : AppCompatActivity() {
             if (isLoading) {
                 companyInfo.visibility = View.GONE
             }
+        })
+
+        detailsViewModel.isFavorite.observe(this, Observer {
+            stockPresentationModel = stockPresentationModel?.copy(isFavorite = it)
+            invalidateOptionsMenu()
         })
     }
 

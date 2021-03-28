@@ -15,15 +15,18 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
+import com.annevonwolffen.shareprices.App
 import com.annevonwolffen.shareprices.R
 import com.annevonwolffen.shareprices.models.presentation.StockPresentationModel
 import com.annevonwolffen.shareprices.presentation.viewmodel.SearchViewModel
-import com.annevonwolffen.shareprices.presentation.viewmodel.ViewModelProviderFactory
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import javax.inject.Inject
 
 class SearchActivity : AppCompatActivity() {
 
+    @Inject
+    lateinit var viewModelProviderFactory: ViewModelProvider.Factory
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: StocksAdapter
     private lateinit var searchViewModel: SearchViewModel
@@ -58,6 +61,7 @@ class SearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
+        (application as App).appComponent.inject(this)
 
         createViewModel()
         initViews()
@@ -86,7 +90,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun createViewModel() {
         searchViewModel =
-            ViewModelProvider(this, ViewModelProviderFactory(applicationContext))[SearchViewModel::class.java]
+            ViewModelProvider(this, viewModelProviderFactory)[SearchViewModel::class.java]
     }
 
     private fun setLightStatusBar() {
