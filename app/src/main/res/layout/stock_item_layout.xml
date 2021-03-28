@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView android:id="@+id/stock_card_view"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/stock_card_height"
+    android:layout_marginBottom="@dimen/margin_small_s"
+    app:cardCornerRadius="@dimen/corner_radius_big"
+    app:cardElevation="@dimen/elevation_zero">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/stock_item_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/selectableItemBackground">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/logo"
+            android:layout_width="@dimen/icon_size_big"
+            android:layout_height="@dimen/icon_size_big"
+            android:layout_marginBottom="@dimen/margin_small_s"
+            android:layout_marginStart="@dimen/margin_small_s"
+            android:layout_marginTop="@dimen/margin_small_s"
+            app:cardCornerRadius="@dimen/corner_radius_medium"
+            app:cardElevation="@dimen/elevation_zero"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/logo_image_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:importantForAccessibility="no"
+                android:scaleType="centerCrop"
+                tools:background="@color/colorGrey" />
+
+        </androidx.cardview.widget.CardView>
+
+        <ImageButton
+            android:id="@+id/add_to_fav_btn"
+            android:layout_width="@dimen/icon_size_small"
+            android:layout_height="@dimen/icon_size_small"
+            android:layout_marginStart="@dimen/margin_small_xs"
+            android:layout_marginTop="@dimen/margin_medium_big"
+            android:src="@drawable/ic_favorite_16dp"
+            app:layout_constraintStart_toEndOf="@+id/ticker"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/ticker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_medium_small_xs"
+            android:layout_marginTop="@dimen/margin_medium_xs"
+            android:textAppearance="@style/TextAppearance.AppTheme.Headline2"
+            app:layout_constraintStart_toEndOf="@+id/logo"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="YNDX" />
+
+        <TextView
+            android:id="@+id/companyName"
+            android:layout_width="@dimen/constraint_match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_medium_xs"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAppearance="@style/TextAppearance.AppTheme.Body"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/priceChange"
+            app:layout_constraintStart_toStartOf="@+id/ticker"
+            tools:text="Yandex, LLC" />
+
+        <TextView
+            android:id="@+id/currentPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_medium_big"
+            android:layout_marginTop="@dimen/margin_medium_xs"
+            android:gravity="end"
+            android:textAppearance="@style/TextAppearance.AppTheme.Headline2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="$72.16" />
+
+        <TextView
+            android:id="@+id/priceChange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_medium_xs"
+            android:layout_marginEnd="@dimen/margin_medium_small_xs"
+            android:gravity="end"
+            android:textAppearance="@style/TextAppearance.AppTheme.Body"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="+$ 0.12 (1,15%)" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

@@ -1,10 +1,47 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorWhite</item>
+        <item name="colorPrimaryDark">@color/colorWhite</item>
+        <item name="colorAccent">@color/colorBlack</item>
+
+    </style>
+
+    <style name="TextAppearance.AppTheme.Headline2" parent="@style/TextAppearance.AppCompat.Headline">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/colorBlack</item>
+    </style>
+
+    <style name="TextAppearance.AppTheme.Headline2.NonCaps" parent="@style/TextAppearance.AppCompat.Headline">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/colorBlack</item>
+    </style>
+
+    <style name="TextAppearance.AppTheme.Body" parent="@style/TextAppearance.AppCompat.Body1">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/colorBlack</item>
+    </style>
+
+    <style name="TextAppearance.AppTheme.Headline2.NonCaps.Grey" parent="@style/TextAppearance.AppTheme.Headline2.NonCaps">
+        <item name="android:textColor">@color/colorGrey</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="TextAppearance.AppTheme.Headline2.NonCaps.BlackGrey" parent="@style/TextAppearance.AppTheme.Headline2.NonCaps">
+        <item name="android:textColor">@color/colorBlackGrey</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="TextAppearance.AppTheme.Headline2.Url" parent="@style/TextAppearance.AppTheme.Headline2.NonCaps">
+        <item name="android:textColor">@color/colorBlue</item>
+        <item name="android:textStyle">normal</item>
     </style>
 
 </resources>
