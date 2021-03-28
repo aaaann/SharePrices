@@ -8,9 +8,7 @@ import io.reactivex.Maybe
 /**
  * @author Terekhova Anna
  */
-class StocksApiMapperImpl : StocksApiMapper {
-
-    private val stocksService: StocksDataService = StocksApi.stocksService
+class StocksApiMapperImpl(private val stocksService: StocksDataService) : StocksApiMapper {
 
     override fun getQuoteForTicker(ticker: String): Maybe<QuoteResponse> {
         return stocksService.getQuoteForTicker(ticker)

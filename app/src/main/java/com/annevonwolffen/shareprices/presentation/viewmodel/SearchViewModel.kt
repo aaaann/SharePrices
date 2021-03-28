@@ -9,8 +9,9 @@ import com.annevonwolffen.shareprices.presentation.SingleLiveEvent
 import com.annevonwolffen.shareprices.presentation.StocksAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-class SearchViewModel(
+class SearchViewModel @Inject constructor(
     stocksInteractor: StocksInteractor
 ) : BaseStocksViewModel(stocksInteractor), StocksAdapter.OnItemClickListener {
 
