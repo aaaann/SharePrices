@@ -1,30 +1,56 @@
 package com.annevonwolffen.shareprices.presentation.viewmodel
 
-import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
+import com.annevonwolffen.shareprices.domain.StocksDataSource
+import com.annevonwolffen.shareprices.domain.StocksDataSourceFactory
 import com.annevonwolffen.shareprices.domain.StocksInteractor
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import com.annevonwolffen.shareprices.models.presentation.StockPresentationModel
 import javax.inject.Inject
 
 /**
  * @author Terekhova Anna
  */
-class StocksViewModel @Inject constructor(
-    stocksInteractor: StocksInteractor
-) : BaseStocksViewModel(stocksInteractor) {
+open class StocksViewModel @Inject constructor(
+    protected val stocksInteractor: StocksInteractor
+) : BaseViewModel() {
+    private val stocksDataSourceFactory: StocksDataSourceFactory = createDataSourceFactory()
+    val stocksPagedList: LiveData<PagedList<StockPresentationModel>>
 
-    fun loadData() {
-        compositeDisposable.add(
-            stocksInteractor.getPopularStocksData()
-                .doOnSubscribe { _isLoading.postValue(true) }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doFinally { _isLoading.value = false }
-                .subscribe({ _stocks.value = it }, { Log.d(TAG, it?.message.orEmpty()) })
-        )
+    init {
+        val config = PagedList.Config.Builder()
+            .setPageSize(PAGE_SIZE)
+            .setInitialLoadSizeHint(PAGE_SIZE * 2)
+            .setEnablePlaceholders(false)
+            .build()
+        stocksPagedList = LivePagedListBuilder<Int, StockPresentationModel>(stocksDataSourceFactory, config).build()
     }
 
-    private companion object {
-        const val TAG = "StocksViewModel"
+    protected open fun createDataSourceFactory() : StocksDataSourceFactory {
+        return StocksDataSourceFactory(stocksInteractor, compositeDisposable)
+    }
+
+    fun getIsInitialLoading(): LiveData<Boolean> = Transformations.switchMap<StocksDataSource, Boolean>(
+        stocksDataSourceFactory.stocksDataSourceLD,
+        StocksDataSource::isInitialLoading
+    )
+
+    fun getIsFurtherLoading(): LiveData<Boolean> = Transformations.switchMap<StocksDataSource, Boolean>(
+        stocksDataSourceFactory.stocksDataSourceLD,
+        StocksDataSource::isFurtherPageLoading
+    )
+
+    fun invalidateDataSource() =
+        stocksDataSourceFactory.stocksDataSourceLD.value?.invalidate()
+
+    fun onFavClick(ticker: String) {
+        stocksInteractor.setFavorite(ticker)
+        invalidateDataSource()
+    }
+
+    protected companion object {
+        const val PAGE_SIZE = 4
     }
 }

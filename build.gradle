@@ -41,6 +41,7 @@ ext {
     swipeRefreshLayout = '1.1.0'
     dagger = '2.29.1'
     glide = '4.11.0'
+    paging = '2.1.2'
 
     junit = '4.13'
     androidTestJunit = '1.1.2'

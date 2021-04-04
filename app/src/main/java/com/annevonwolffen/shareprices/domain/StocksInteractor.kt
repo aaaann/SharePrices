@@ -7,7 +7,10 @@ import io.reactivex.Single
  * @author Terekhova Anna
  */
 interface StocksInteractor {
-    fun getPopularStocksData(): Single<List<StockPresentationModel>>
+
+    fun getPopularStocksData(startPosition: Int, loadSize: Int): Single<List<StockPresentationModel>>
+
+    fun getFavoriteStocksData(startPosition: Int, loadSize: Int): Single<List<StockPresentationModel>>
 
     fun searchSymbol(query: String): Single<List<StockPresentationModel>>
 
