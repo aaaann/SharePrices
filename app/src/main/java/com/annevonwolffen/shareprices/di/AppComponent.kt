@@ -2,6 +2,7 @@ package com.annevonwolffen.shareprices.di
 
 import android.content.Context
 import com.annevonwolffen.shareprices.di.viewmodel.ViewModelModule
+import com.annevonwolffen.shareprices.presentation.FavoritePageFragment
 import com.annevonwolffen.shareprices.presentation.SearchActivity
 import com.annevonwolffen.shareprices.presentation.StockDetailsActivity
 import com.annevonwolffen.shareprices.presentation.StocksPageFragment
@@ -18,6 +19,7 @@ interface AppComponent {
     }
 
     fun inject(stocksPageFragment: StocksPageFragment)
+    fun inject(favoritePageFragment: FavoritePageFragment)
     fun inject(stockDetailsActivity: StockDetailsActivity)
     fun inject(searchActivity: SearchActivity)
 }

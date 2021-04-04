@@ -12,8 +12,11 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class SearchViewModel @Inject constructor(
-    stocksInteractor: StocksInteractor
-) : BaseStocksViewModel(stocksInteractor), StocksAdapter.OnItemClickListener {
+    private val stocksInteractor: StocksInteractor
+) : BaseViewModel(), StocksAdapter.FavoriteClickListener, StocksAdapter.OnItemClickListener {
+
+    private val _stocks = MutableLiveData<List<StockPresentationModel>>()
+    val stocks: LiveData<List<StockPresentationModel>> = _stocks
 
     private val _recentSearchedTickers = MutableLiveData<List<String>>()
     val recentSearchedTickers: LiveData<List<String>> = _recentSearchedTickers
@@ -38,6 +41,17 @@ class SearchViewModel @Inject constructor(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ _recentSearchedTickers.value = it }, { Log.d(TAG, it?.message.orEmpty()) })
         )
+    }
+
+    override fun onFavClick(ticker: String) {
+        val isFavorite = stocksInteractor.setFavorite(ticker)
+        val stocks = _stocks.value?.toMutableList()
+        val favoriteStockPos = stocks?.indexOfFirst { it.ticker == ticker }
+        favoriteStockPos?.takeIf { it != -1 }?.let {
+            val favoriteStock = stocks[it]
+            stocks[it] = favoriteStock.copy(isFavorite = isFavorite)
+            _stocks.value = stocks
+        }
     }
 
     override fun onItemClicked(stockModel: StockPresentationModel) {

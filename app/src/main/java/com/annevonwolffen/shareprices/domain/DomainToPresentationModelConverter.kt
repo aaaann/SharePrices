@@ -7,7 +7,7 @@ import com.annevonwolffen.shareprices.utils.ResourceWrapper
 import kotlin.math.abs
 
 class DomainToPresentationModelConverter(private val resourceWrapper: ResourceWrapper) {
-    fun convertToPresentationModel(stockDomainModel: StockModel, isFavorite: Boolean): StockPresentationModel {
+    fun convertToPresentationModel(stockDomainModel: StockModel, isFavorite: Boolean = true): StockPresentationModel {
         return StockPresentationModel(
             stockDomainModel.ticker,
             stockDomainModel.name,

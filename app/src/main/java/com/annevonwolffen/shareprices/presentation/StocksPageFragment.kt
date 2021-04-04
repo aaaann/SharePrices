@@ -23,20 +23,19 @@ import javax.inject.Inject
  *
  * @author Terekhova Anna
  */
-open class StocksPageFragment : Fragment(), StocksAdapter.OnItemClickListener {
+open class StocksPageFragment : Fragment(), StocksAdapter.OnItemClickListener, StocksAdapter.FavoriteClickListener {
 
     @Inject
     lateinit var imageManager: ImageManager
 
     @Inject
     lateinit var viewModelProviderFactory: ViewModelProvider.Factory
-    protected lateinit var adapter: StocksAdapter
-    private lateinit var stocksViewModel: StocksViewModel
+    private lateinit var pagedAdapter: StocksPagedListAdapter
+    protected lateinit var stocksViewModel: StocksViewModel
     private lateinit var shimmerLayout: LinearLayout
     private lateinit var recyclerView: RecyclerView
-    private lateinit var refreshLayout: SwipeRefreshLayout
-    private lateinit var scrollObserver: RecyclerView.AdapterDataObserver
 
+    private lateinit var refreshLayout: SwipeRefreshLayout
     private var isRefreshing = false
 
     override fun onAttach(context: Context) {
@@ -59,24 +58,10 @@ open class StocksPageFragment : Fragment(), StocksAdapter.OnItemClickListener {
         initObservers()
     }
 
-    override fun onDestroy() {
-        try {
-            adapter.unregisterAdapterDataObserver(scrollObserver)
-        } catch (ex: IllegalStateException) {
-        }
-        super.onDestroy()
-    }
-
-    private fun createViewModel() {
+    protected open fun createViewModel() {
         stocksViewModel = activity?.let {
             ViewModelProvider(it, viewModelProviderFactory)[StocksViewModel::class.java]
         } ?: throw Exception("Activity is null")
-        // если вьюмодель взята не из стора, т. е. не при смене конфигурации,
-        // запустить загрузку данных
-        if (stocksViewModel.isNewInstance) {
-            stocksViewModel.loadData()
-            stocksViewModel.isNewInstance = false
-        }
     }
 
     private fun initViews(view: View) {
@@ -86,47 +71,42 @@ open class StocksPageFragment : Fragment(), StocksAdapter.OnItemClickListener {
 
     private fun initRecyclerView(view: View) {
         recyclerView = view.findViewById(R.id.stocks_recycler_view)
-        adapter = StocksAdapter(stocksViewModel, this, imageManager)
-        recyclerView.adapter = adapter
-        scrollObserver = object : RecyclerView.AdapterDataObserver() {
-            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                super.onItemRangeInserted(positionStart, itemCount)
-                recyclerView.scrollToPosition(0)
-            }
-
-            override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
-                super.onItemRangeRemoved(positionStart, itemCount)
-                recyclerView.scrollToPosition(0)
-            }
-        }
-        adapter.registerAdapterDataObserver(scrollObserver)
+        pagedAdapter = StocksPagedListAdapter(this, this, imageManager)
+        recyclerView.adapter = pagedAdapter
     }
 
     private fun initRefreshLayout(view: View) {
         val refreshListener = SwipeRefreshLayout.OnRefreshListener {
-            stocksViewModel.loadData()
+            stocksViewModel.invalidateDataSource()
             isRefreshing = true
+            pagedAdapter.setPageLoading(false)
         }
         refreshLayout = view.findViewById(R.id.refresh_layout)
         refreshLayout.setOnRefreshListener(refreshListener)
     }
 
     private fun initObservers() {
-        stocksViewModel.stocks.observe(this, Observer { updateStocksList(it) })
-        stocksViewModel.isLoading.observe(
+        stocksViewModel.stocksPagedList.observe(this, Observer {
+            pagedAdapter.submitList(it)
+        })
+        stocksViewModel.getIsInitialLoading().observe(
             this,
             Observer { isLoading ->
                 shimmerLayout.visibility = if (isLoading) View.VISIBLE else View.GONE
                 recyclerView.visibility = if (isLoading) View.GONE else View.VISIBLE
                 refreshLayout.isRefreshing = isLoading && isRefreshing
             })
-    }
-
-    protected open fun updateStocksList(stocks: List<StockPresentationModel>) {
-        adapter.submitList(stocks.toMutableList())
+        stocksViewModel.getIsFurtherLoading().observe(this, Observer { isLoading ->
+            pagedAdapter.setPageLoading(isLoading)
+        })
     }
 
     override fun onItemClicked(stockModel: StockPresentationModel) {
         startActivity(context?.let { StockDetailsActivity.newIntent(it, stockModel) })
+    }
+
+    override fun onFavClick(ticker: String) {
+        pagedAdapter.setPageLoading(false)
+        stocksViewModel.onFavClick(ticker)
     }
 }

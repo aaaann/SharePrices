@@ -25,6 +25,8 @@ class StocksSharedPrefHelperImpl(context: Context) : StocksSharedPrefHelper {
         return !isAlreadyFavorite
     }
 
+    override fun getFavorites(): Set<String> = sharedPreferences.getStringSet(FAVS, emptySet()) ?: emptySet()
+
     override fun getRecentSearched(): Set<String> = sharedPreferences.getStringSet(RECENT_SEARCH, setOf()) ?: setOf()
 
     override fun addToRecentSearched(ticker: String) {

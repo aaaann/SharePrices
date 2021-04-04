@@ -12,8 +12,21 @@ class StocksInteractorImpl(
     private val converter: DomainToPresentationModelConverter,
     private val sharedPrefHelper: StocksSharedPrefHelper
 ) : StocksInteractor {
-    override fun getPopularStocksData(): Single<List<StockPresentationModel>> = repository.getPopularStocksData()
-        .map { list -> list.map { converter.convertToPresentationModel(it, sharedPrefHelper.isFavorite(it.ticker)) } }
+
+    override fun getPopularStocksData(startPosition: Int, loadSize: Int): Single<List<StockPresentationModel>> =
+        repository.getPopularStocksData(startPosition, loadSize)
+            .map { list ->
+                list.map {
+                    converter.convertToPresentationModel(
+                        it,
+                        sharedPrefHelper.isFavorite(it.ticker)
+                    )
+                }
+            }
+
+    override fun getFavoriteStocksData(startPosition: Int, loadSize: Int): Single<List<StockPresentationModel>> =
+        repository.getFavoriteStocksData(startPosition, loadSize, sharedPrefHelper.getFavorites().toList())
+            .map { list -> list.map { converter.convertToPresentationModel(it) } }
 
     override fun searchSymbol(query: String): Single<List<StockPresentationModel>> = repository.getStocksSearch(query)
         .map { list -> list.map { converter.convertToPresentationModel(it, sharedPrefHelper.isFavorite(it.ticker)) } }

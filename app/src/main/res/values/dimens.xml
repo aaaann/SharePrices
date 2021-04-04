@@ -12,6 +12,7 @@
 
     <!-- padding -->
     <dimen name="padding_small_s">8dp</dimen>
+    <dimen name="padding_small">12dp</dimen>
     <dimen name="padding_medium">16dp</dimen>
 
     <!-- corner radius -->

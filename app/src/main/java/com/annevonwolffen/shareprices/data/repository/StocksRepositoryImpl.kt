@@ -10,6 +10,7 @@ import com.annevonwolffen.shareprices.models.data.CompanyProfileResponse
 import com.annevonwolffen.shareprices.models.data.QuoteResponse
 import com.annevonwolffen.shareprices.models.data.SymbolJsonModel
 import com.annevonwolffen.shareprices.models.domain.StockModel
+import com.annevonwolffen.shareprices.utils.safeSubList
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -28,38 +29,64 @@ class StocksRepositoryImpl(
     private val converter: ResponseToStockDomainModelConverter
 ) : StocksRepository {
 
-    private val tickersList = mutableListOf<String>()
+    override fun getPopularStocksData(startPosition: Int, loadSize: Int): Single<List<StockModel>> {
+        return getStocksData(
+            getPopularTickers(startPosition, startPosition + loadSize).map { it.symbol }
+        )
+    }
 
-    override fun getPopularStocksData(): Single<List<StockModel>> {
-        return Observable.fromIterable(getPopularTickers().subList(0, 21))
-            .doOnNext { tickersList.add(it.symbol) }
-            .flatMapMaybe { symbolModel ->
-                Maybe.fromCallable { getStockModel(symbolModel.symbol) }
-                    .subscribeOn(Schedulers.io())
-            }
-            .flatMapMaybe { maybe -> maybe }
-            .toList()
-            .doOnSuccess { stocksDao.insert(it) }
-            .map { if (it.isEmpty()) stocksDao.selectStocksByTickers(tickersList) else it }
-            .map { it.sortedByDescending { stock -> stock.currentPrice } }
-            .doOnError { t -> Log.e(TAG, t?.message.orEmpty()) }
-            .onErrorReturnItem(Collections.emptyList())
+    override fun getFavoriteStocksData(
+        startPosition: Int,
+        loadSize: Int,
+        favoriteTickers: List<String>
+    ): Single<List<StockModel>> {
+        return getStocksData(favoriteTickers.safeSubList(startPosition, startPosition + loadSize))
     }
 
     override fun getStocksSearch(query: String): Single<List<StockModel>> {
+        val tickersList = mutableListOf<String>()
         return getSearchSymbols(query)
             .flatMapSingle { list ->
                 Observable.fromIterable(list)
                     .doOnNext { Log.d(TAG, "found symbol is $it") }
                     .flatMapMaybe { symbol ->
-                        Maybe.fromCallable { getStockModel(symbol) }
+                        Maybe.fromCallable {
+                            getStockModel(symbol)
+                                .doOnComplete { tickersList.add(symbol) }
+                        }
                             .subscribeOn(Schedulers.io())
                     }
                     .flatMapMaybe { maybe -> maybe }
                     .toList()
+                    .doOnSuccess { stocksDao.insert(it) }
+                    .map {
+                        if (tickersList.isNotEmpty()) it.addAll(stocksDao.selectStocksByTickers(tickersList))
+                        return@map it
+                    }
                     .doOnError { t -> Log.e(TAG, t?.message.orEmpty()) }
                     .onErrorReturnItem(Collections.emptyList())
             }
+    }
+
+    private fun getStocksData(tickers: List<String>): Single<List<StockModel>> {
+        val tickersList = mutableListOf<String>()
+        return Observable.fromIterable(tickers)
+            .flatMapMaybe { symbol ->
+                Maybe.fromCallable {
+                    getStockModel(symbol)
+                        .doOnComplete { tickersList.add(symbol) }
+                }
+                    .subscribeOn(Schedulers.io())
+            }
+            .flatMapMaybe { maybe -> maybe }
+            .toList()
+            .doOnSuccess { stocksDao.insert(it) }
+            .map {
+                if (tickersList.isNotEmpty()) it.addAll(stocksDao.selectStocksByTickers(tickersList))
+                return@map it
+            }
+            .doOnError { t -> Log.e(TAG, t?.message.orEmpty()) }
+            .onErrorReturnItem(Collections.emptyList())
     }
 
     private fun getStockModel(symbol: String): Maybe<StockModel> {
@@ -84,10 +111,12 @@ class StocksRepositoryImpl(
                     .map { it.symbol }
             }
             .doOnError { t -> Log.e(TAG, t?.message.orEmpty()) }
-            .onErrorComplete()
+            .onErrorReturnItem(Collections.emptyList())
     }
 
-    private fun getPopularTickers(): List<SymbolJsonModel> = rawDataHelper.popularTickers
+    private fun getPopularTickers(startPosition: Int, endPosition: Int): List<SymbolJsonModel> {
+        return rawDataHelper.popularTickers.safeSubList(startPosition, endPosition)
+    }
 
     private companion object {
         const val TAG = "StocksRepository"

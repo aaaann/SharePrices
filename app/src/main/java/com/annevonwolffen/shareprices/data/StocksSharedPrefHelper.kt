@@ -5,6 +5,8 @@ interface StocksSharedPrefHelper {
 
     fun addFavorite(ticker: String): Boolean
 
+    fun getFavorites(): Set<String>
+
     fun getRecentSearched(): Set<String>
 
     fun addToRecentSearched(ticker: String)

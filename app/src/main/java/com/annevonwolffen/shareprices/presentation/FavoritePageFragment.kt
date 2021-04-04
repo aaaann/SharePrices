@@ -1,13 +1,16 @@
 package com.annevonwolffen.shareprices.presentation
 
-import com.annevonwolffen.shareprices.models.presentation.StockPresentationModel
+import androidx.lifecycle.ViewModelProvider
+import com.annevonwolffen.shareprices.presentation.viewmodel.FavoriteStocksViewModel
 
 /**
  * @author Terekhova Anna
  */
 class FavoritePageFragment : StocksPageFragment() {
 
-    override fun updateStocksList(stocks: List<StockPresentationModel>) {
-        adapter.submitList(stocks.filter { it.isFavorite }.toMutableList())
+    override fun createViewModel() {
+        stocksViewModel = activity?.let {
+            ViewModelProvider(it, viewModelProviderFactory)[FavoriteStocksViewModel::class.java]
+        } ?: throw Exception("Activity is null")
     }
 }
